@@ -9,6 +9,7 @@ tab_general = "일반"
 tab_addons = "애드온"
 tab_configuration = "설정"
 tab_debug = "디버그"
+tab_console = "콘솔"
 
 alt_confirm = "확인"
 confirm_system_clean_up_msg = "시스템 파티션 정리 스크립트를 실행하시겠습니까?"

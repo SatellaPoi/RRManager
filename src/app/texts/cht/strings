@@ -9,6 +9,7 @@ tab_general = "一般"
 tab_addons = "插件"
 tab_configuration = "配置"
 tab_debug = "調試"
+tab_console = "控制台"
 
 alt_confirm = "確認"
 confirm_system_clean_up_msg = "是否要運行系統清理分區腳本？"

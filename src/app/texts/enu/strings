@@ -9,6 +9,7 @@ tab_general = "General"
 tab_addons = "Addons"
 tab_configuration = "Settings"
 tab_debug = "Debug"
+tab_console = "Console"
 
 alt_confirm = "Confirm"
 confirm_system_clean_up_msg = "Would you like to run clean up sustem partition script?"

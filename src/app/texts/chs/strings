@@ -9,6 +9,7 @@ tab_general = "常规"
 tab_addons = "插件"
 tab_configuration = "配置"
 tab_debug = "调试"
+tab_console = "控制台"
 
 alt_confirm = "确认"
 confirm_system_clean_up_msg = "是否要运行系统清理脚本？"

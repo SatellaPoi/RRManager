@@ -288,6 +288,8 @@ export default
                     var isModernDSM = systemInfo.version_string.includes("7.2.2");
                     self.apiProvider.setIsModernDSM(isModernDSM);
 
+                    await self.updateAllForm();
+
                     await self.__checkDownloadFolder(self.__checkRequiredTasks.bind(self));
                     if (systemInfo && packages) {
                         self.rrCheckVersion = rrCheckVersion;
@@ -303,7 +305,6 @@ export default
                             "select",
                             self.panels.statusBoxsPanel.clickedBox
                         );
-                        await self.updateAllForm();
                         var data = {
                             text: `Model: ${systemInfo?.model}`,
                             text2: `RAM: ${systemInfo?.ram} MB`,

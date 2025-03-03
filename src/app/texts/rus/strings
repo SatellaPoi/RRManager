@@ -9,6 +9,7 @@ tab_general = "Загальне"
 tab_addons = "Додатки"
 tab_configuration = "Конфігурація"
 tab_debug = "Відлагодження"
+tab_console = "Консоль"
 
 lb_select_update_file = "Будь ласка, виберіть файл оновлення:"
 upload_update_file_form_validation_invalid_msg = "Будь ласка, виберіть файл оновлення/оновленняВсіх перед початком завантаження."

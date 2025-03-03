@@ -51,7 +51,7 @@ export default
                 },
                 {
                     text: this.helper.V('ui', 'tab_debug'),
-                    iconCls: "icon-debug",
+                    iconCls: "icon-terminal-and-SNMP",
                     fn: "SYNOCOMMUNITY.RRManager.Debug.Main",
                 },
                 {
@@ -62,7 +62,7 @@ export default
             ];
             if (showConsoleTab) {
                 items.push({
-                    text: 'Console',
+                    text: this.helper.V('ui', 'tab_console'),
                     iconCls: "icon-terminal-and-SNMP",
                     fn: "SYNOCOMMUNITY.RRManager.Ssh.Main",
                 });

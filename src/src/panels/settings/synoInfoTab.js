@@ -52,7 +52,7 @@ export default
                             }, {
                                 fieldLabel: 'Netif seq',
                                 name: 'netif_seq',
-                                allowBlank: false,
+                                allowBlank: true,
                                 xtype: 'syno_textfield',
                             }, {
                                 fieldLabel: 'Buzzer offen',

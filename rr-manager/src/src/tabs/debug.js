@@ -1,41 +1,11 @@
+import {} from '../utils/synoApiProvider';
+
 export default Ext.define('SYNOCOMMUNITY.RRManager.Debug.Main', {
   extend: 'SYNO.SDS.Utils.TabPanel',
   API: {},
+  apiProvider: SYNOCOMMUNITY.RRManager.SynoApiProvider,
   constructor: function (e) {
     (this.appWin = e.appWin), (this.owner = e.owner), this.callParent([this.fillConfig(e)]);
-  },
-  _prefix: '/webman/3rdparty/rr-manager/scripts/',
-  callCustomScript: function (scriptName) {
-    return new Promise((resolve, reject) => {
-      Ext.Ajax.request({
-        url: `${this._prefix}${scriptName}`,
-        method: 'GET',
-        timeout: 60000,
-        headers: {
-          'Content-Type': 'text/html',
-        },
-        success: function (response) {
-          // if response text is string need to decode it
-          if (typeof response?.responseText === 'string') {
-            resolve(Ext.decode(response?.responseText));
-          } else {
-            resolve(response?.responseText);
-          }
-        },
-        failure: function (result) {
-          if (
-            typeof result?.responseText === 'string' &&
-            result?.responseText &&
-            !result?.responseText.startsWith('<')
-          ) {
-            var response = Ext.decode(result?.responseText);
-            reject(response?.error);
-          } else {
-            reject('Failed with status: ' + result?.status);
-          }
-        },
-      });
-    });
   },
   fillConfig: function (e) {
     this.generalTab = new SYNOCOMMUNITY.RRManager.Debug.GeneralTab({
@@ -86,7 +56,7 @@ export default Ext.define('SYNOCOMMUNITY.RRManager.Debug.Main', {
     this.clearStatusBusy();
   },
   getConf: function () {
-    return this.callCustomScript('getNetworkInfo.cgi');
+    return this.apiProvider.callCustomScript('getNetworkInfo.cgi');
   },
   setConf: function () {
     var user_config = this.getParams();

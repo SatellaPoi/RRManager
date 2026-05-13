@@ -32,14 +32,21 @@ if __name__ == "__main__":
         query_string = os.environ.get("QUERY_STRING", "")
         query_params = parse_qs(query_string)
         file_name_encoded = query_params.get("file", [None])[0]
-        file_name = unquote(file_name_encoded)
+        file_name = unquote(file_name_encoded or "")
         # response["file_from_params"] = file_name
         try:
+            if not file_name:
+                raise Exception("file is empty")
             with zipfile.ZipFile(file_name, mode="r") as zif:
                 if "RR_VERSION" in zif.namelist():
                     for lines in zif.read("RR_VERSION").split(b"\r\n"):
-                        response["updateVersion"] = lines.strip().decode("utf-8")
-                        response["success"] = True
+                        update_version = lines.strip().decode("utf-8")
+                        if update_version:
+                            response["updateVersion"] = update_version
+                            response["success"] = True
+                            break
+                    if not response.get("success"):
+                        raise Exception("'RR_VERSION' file is empty.")
                 else:
                     raise Exception("'RR_VERSION' file not found in the zip file.")
         except Exception as e:

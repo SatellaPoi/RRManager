@@ -5,6 +5,7 @@ import json
 import sys
 import cgi
 import cgitb
+import shlex
 import subprocess
 from pathlib import Path
 from urllib.parse import parse_qs, unquote
@@ -32,29 +33,32 @@ def read_config(file_path):
             for line in file:
                 line = line.strip()
                 if line and not line.startswith("#"):
-                    key, value = line.split("=")
+                    key, value = line.split("=", 1)
                     config[key.strip()] = value.strip()
         return config
     except IOError as e:
         return f"Error reading user-config.yml: {e}"
-    except e:
+    except Exception:
         return "{}"
 
 
 def rmove_file(path, default=None):
     try:
+        safe_path = shlex.quote(path)
         if os.path.exists("/usr/sbin/rrmdo"):
-            return os.popen(f"/usr/sbin/rrmdo rm -f {path}").read().strip()
+            return os.popen(f"/usr/sbin/rrmdo rm -f {safe_path}").read().strip()
         else:
-            return os.popen(f"rm -f {path}").read().strip()
+            return os.popen(f"rm -f {safe_path}").read().strip()
     except Exception:
         return default
 
 
 def updateRR(file, progress):
     try:
+        safe_file = shlex.quote(file)
+        safe_progress = shlex.quote(progress)
         subprocess.Popen(
-            f'/usr/bin/rr-loaderdisk.sh mountLoaderDisk && /usr/bin/rr-update.sh updateRR "{file}" "{progress}" && /usr/bin/rr-loaderdisk.sh unmountLoaderDisk',
+            f"/usr/bin/rr-loaderdisk.sh mountLoaderDisk && /usr/bin/rr-update.sh updateRR {safe_file} {safe_progress} && /usr/bin/rr-loaderdisk.sh unmountLoaderDisk",
             preexec_fn=os.setsid,
             close_fds=False,
             shell=True,
@@ -85,13 +89,11 @@ if __name__ == "__main__":
     if user:
         try:
             if os.environ.get("REQUEST_METHOD") == "GET":
-                # Read the request body to get the JSON data
-                ctype, pdict = cgi.parse_header(os.environ["CONTENT_TYPE"])
                 # Extract query string from environment variable
                 query_string = os.environ.get("QUERY_STRING", "")
                 query_params = parse_qs(query_string)
                 file_update_encoded = query_params.get("file", [None])[0]
-                file_update = unquote(file_update_encoded).strip()
+                file_update = unquote(file_update_encoded or "").strip()
 
                 response["file"] = file_update
                 if not file_update:

@@ -40,7 +40,7 @@ def read_rrmanager_config(file_path):
             for line in file:
                 line = line.strip()
                 if line and not line.startswith("#"):
-                    key, value = line.split("=")
+                    key, value = line.split("=", 1)
                     config[key.strip()] = value.strip().replace('"', "")
         return config
     except IOError as e:

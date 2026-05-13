@@ -41,7 +41,9 @@ uploading_file = "Завантаження файлу..."
 save_addons_changes = "Зберегти зміни додатків"
 
 rr_config_applied="Конфігурація RR успішно застосована. Будь ласка, перезавантажте NAS для застосування змін."
+rr_config_apply_error="Не вдалося застосувати конфігурацію RR."
 checking_dependencies_loader="Перевірка залежностей..."
+error_checking_share="Не вдалося перевірити налаштовану спільну папку."
 file_uploading_failed_msg="Помилка завантаження файлу."
 completed="Завершено:"
 

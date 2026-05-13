@@ -130,10 +130,9 @@ export default Ext.define('SYNOCOMMUNITY.RRManager.Overview.HealthPanel', {
       descriptionField = this.lowerPanel.getComponent('desc'),
       leftButton = this.upperPanel.getComponent('leftBtn'),
       rightButton = this.upperPanel.getComponent('rightBtn');
-    initialHeight = descriptionField.getHeight();
+    const initialHeight = descriptionField.getHeight();
     let panelHeight = rightPanel.getHeight(),
       isHeightChanged = false;
-    statusDescription = this.descriptionMapping.normal;
     descriptionField.setValue(self.owner.systemInfoTxt);
 
     const updatedHeight = descriptionField.getHeight();

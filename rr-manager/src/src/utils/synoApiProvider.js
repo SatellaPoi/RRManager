@@ -3,6 +3,12 @@ Ext.ns('SYNOCOMMUNITY.RRManager');
 export default SYNOCOMMUNITY.RRManager.SynoApiProvider = {
   sendWebAPI: null,
   _prefix: '/webman/3rdparty/rr-manager/scripts/',
+  _jsonHeaders: {
+    'Content-Type': 'application/json',
+  },
+  _scriptHeaders: {
+    'Content-Type': 'text/html',
+  },
   init: function (sendWebAPI, isModernDSM = true) {
     this.sendWebAPI = sendWebAPI;
     this.isModernDSM = isModernDSM;
@@ -122,9 +128,7 @@ export default SYNOCOMMUNITY.RRManager.SynoApiProvider = {
         url: url,
         method: 'POST',
         jsonData: jsonData,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: this._jsonHeaders,
         success: function (response) {
           resolve(Ext.decode(response.responseText));
         },
@@ -242,6 +246,27 @@ export default SYNOCOMMUNITY.RRManager.SynoApiProvider = {
   checkRRVersion: function () {
     return this.callCustomScript('getRrReleaseInfo.cgi');
   },
+  _decodeScriptResponse: function (response, decodeEmptyResponse) {
+    if (
+      typeof response?.responseText === 'string' &&
+      (decodeEmptyResponse || response?.responseText !== '')
+    ) {
+      return Ext.decode(response?.responseText);
+    }
+    return response?.responseText;
+  },
+  _rejectScriptFailure: function (result, reject, ignoreHtmlResponse) {
+    if (
+      typeof result?.responseText === 'string' &&
+      result?.responseText &&
+      (!ignoreHtmlResponse || !result?.responseText.startsWith('<'))
+    ) {
+      var response = Ext.decode(result?.responseText);
+      reject(response?.error);
+      return;
+    }
+    reject('Failed with status: ' + result?.status);
+  },
   getUpdateFileInfo: function (file) {
     return new Promise((resolve, reject) => {
       Ext.Ajax.request({
@@ -251,25 +276,14 @@ export default SYNOCOMMUNITY.RRManager.SynoApiProvider = {
         params: {
           file: file,
         },
-        headers: {
-          'Content-Type': 'text/html',
-        },
+        headers: this._scriptHeaders,
         success: function (response) {
-          // if response text is string need to decode it
-          if (typeof response?.responseText === 'string' && response?.responseText !== '') {
-            resolve(Ext.decode(response?.responseText));
-          } else {
-            resolve(response?.responseText);
-          }
+          resolve(this._decodeScriptResponse(response, false));
         },
         failure: function (result) {
-          if (typeof result?.responseText === 'string' && result?.responseText) {
-            var response = Ext.decode(result?.responseText);
-            reject(response?.error);
-          } else {
-            reject('Failed with status: ' + response?.status);
-          }
+          this._rejectScriptFailure(result, reject, false);
         },
+        scope: this,
       });
     });
   },
@@ -279,29 +293,14 @@ export default SYNOCOMMUNITY.RRManager.SynoApiProvider = {
         url: `${this._prefix}${scriptName}`,
         method: 'GET',
         timeout: 60000,
-        headers: {
-          'Content-Type': 'text/html',
-        },
+        headers: this._scriptHeaders,
         success: function (response) {
-          // if response text is string need to decode it
-          if (typeof response?.responseText === 'string') {
-            resolve(Ext.decode(response?.responseText));
-          } else {
-            resolve(response?.responseText);
-          }
+          resolve(this._decodeScriptResponse(response, true));
         },
         failure: function (result) {
-          if (
-            typeof result?.responseText === 'string' &&
-            result?.responseText &&
-            !result?.responseText.startsWith('<')
-          ) {
-            var response = Ext.decode(result?.responseText);
-            reject(response?.error);
-          } else {
-            reject('Failed with status: ' + result?.status);
-          }
+          this._rejectScriptFailure(result, reject, true);
         },
+        scope: this,
       });
     });
   },

@@ -23,12 +23,12 @@ def read_rrmanager_config(file_path):
             for line in file:
                 line = line.strip()
                 if line and not line.startswith("#"):
-                    key, value = line.split("=")
+                    key, value = line.split("=", 1)
                     config[key.strip()] = value.strip()
         return config
     except IOError as e:
         return f"Error reading user-config.yml: {e}"
-    except e:
+    except Exception:
         return "{}"
 
 
@@ -72,8 +72,9 @@ if __name__ == "__main__":
             rr_config = read_rrmanager_config(
                 "/var/packages/rr-manager/target/app/config.txt"
             )
-            uploadUpdatesFolder = rr_config.get("UPLOAD_DIR_PATH") + rr_config.get(
-                "RR_TMP_DIR"
+            uploadUpdatesFolder = os.path.join(
+                rr_config.get("UPLOAD_DIR_PATH", ""),
+                rr_config.get("RR_TMP_DIR", "").lstrip("/"),
             )
             response["result"] = get_zip_file_metadata(uploadUpdatesFolder)
             response["success"] = True

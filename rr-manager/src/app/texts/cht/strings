@@ -31,7 +31,9 @@ uploading_file = "正在上傳文件..."
 save_addons_changes = "保存插件更改"
 
 rr_config_applied="RR 配置已成功應用。請重新啟動 NAS 以應用更改。"
+rr_config_apply_error="無法應用 RR 配置。"
 checking_dependencies_loader="正在檢查依賴項..."
+error_checking_share="無法檢查已配置的共享資料夾。"
 
 section_rr_actions="更新 RR Loader"
 run_update="上傳文件"

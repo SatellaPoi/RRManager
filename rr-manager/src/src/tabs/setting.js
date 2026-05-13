@@ -55,8 +55,7 @@ export default Ext.define('SYNOCOMMUNITY.RRManager.Setting.Main', {
       if (t && Ext.isFunction(t.loadForm)) {
         if (t.itemId === 'SynoInfoTab') {
           t.loadForm(user_config.synoinfo);
-        }
-        if (t.itemId === 'RrManagerConfigTab') {
+        } else if (t.itemId === 'RrManagerConfigTab') {
           t.loadForm(rrm_config);
         } else {
           t.loadForm(user_config);

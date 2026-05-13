@@ -6,11 +6,6 @@ export default Ext.define('SYNOCOMMUNITY.RRManager.Overview.Main', {
   helper: SYNOCOMMUNITY.RRManager.Helper,
   updateHelper: SYNOCOMMUNITY.RRManager.UpdateHelper,
   apiProvider: SYNOCOMMUNITY.RRManager.SynoApiProvider,
-  formatString: function (str, ...args) {
-    return str.replace(/{(\d+)}/g, function (match, number) {
-      return typeof args[number] !== 'undefined' ? args[number] : match;
-    });
-  },
 
   handleFileUpload: async function (jsonData, rrManagerConfig) {
     const handleUpload = async (data) => {
@@ -153,7 +148,7 @@ export default Ext.define('SYNOCOMMUNITY.RRManager.Overview.Main', {
           x => x.path.toLowerCase() === shareName.toLowerCase()
         );
         if (!downloadsShareMetadata) {
-          var msg = this.formatString(
+          var msg = this.helper.formatString(
             this.helper.V('ui', 'share_notfound_msg'),
             config['SHARE_NAME']
           );
@@ -256,7 +251,7 @@ export default Ext.define('SYNOCOMMUNITY.RRManager.Overview.Main', {
               rrCheckVersion.tag
             ),
             rrCheckVersion.notes,
-            self.donwloadUpdate.bind(self)
+            self.downloadUpdate.bind(self)
           );
         }
       } catch (error) {
@@ -295,7 +290,7 @@ export default Ext.define('SYNOCOMMUNITY.RRManager.Overview.Main', {
   showMsg: function (msg) {
     this.owner.getMsgBox().alert('title', msg);
   },
-  donwloadUpdate: function () {
+  downloadUpdate: function () {
     var self = this;
     SYNO.API.currentManager.requestAPI('SYNO.DownloadStation2.Task', 'create', '2', {
       type: 'url',
@@ -303,6 +298,9 @@ export default Ext.define('SYNOCOMMUNITY.RRManager.Overview.Main', {
       create_list: true,
       url: [self.rrCheckVersion.updateAllUrl],
     });
+  },
+  donwloadUpdate: function () {
+    return this.downloadUpdate();
   },
   updateAllForm: async function () {
     this.owner.setStatusBusy();
@@ -342,7 +340,7 @@ export default Ext.define('SYNOCOMMUNITY.RRManager.Overview.Main', {
     return null;
   },
   onFromPC: function () {
-    this.uploadFileDialog = this.createUplaodFileDialog();
+    this.uploadFileDialog = this.createUploadFileDialog();
     this.uploadFileDialog.open();
   },
   onFromDS: function () {
@@ -391,7 +389,7 @@ export default Ext.define('SYNOCOMMUNITY.RRManager.Overview.Main', {
     }
     this.dialog.show();
   },
-  createUplaodFileDialog: function () {
+  createUploadFileDialog: function () {
     this.uploadFileDialog = new SYNOCOMMUNITY.RRManager.Overview.UploadFileDialog({
       parent: this,
       owner: this.appWin,
@@ -402,6 +400,9 @@ export default Ext.define('SYNOCOMMUNITY.RRManager.Overview.Main', {
       apiProvider: this.apiProvider,
     });
     return this.uploadFileDialog;
+  },
+  createUplaodFileDialog: function () {
+    return this.createUploadFileDialog();
   },
   preCheck: function (a) {
     var b = a.path.substring(a.path.lastIndexOf('.'));

@@ -15,12 +15,12 @@ def read_rrmanager_config(file_path):
             for line in file:
                 line = line.strip()
                 if line and not line.startswith("#"):
-                    key, value = line.split("=")
+                    key, value = line.split("=", 1)
                     config[key.strip()] = value.strip()
         return config
     except IOError as e:
         return f"Error reading user-config.yml: {e}"
-    except e:
+    except Exception:
         return "{}"
 
 
@@ -61,7 +61,7 @@ if __name__ == "__main__":
                             response["result"] = parsed_content
                             response["success"] = True
                     else:
-                        response["result"] = '{"progress": "--", "progressmsg": "--"}'
+                        response["result"] = {"progress": "--", "progressmsg": "--"}
                         response["success"] = True
                 except json.JSONDecodeError:
                     response["status"] = "File content is not valid JSON."

@@ -7,6 +7,11 @@ export default
             this.owner = a.owner;
             this.parent = a.parent;
             this.apiProvider = a.apiProvider;
+            this.MAX_POST_FILESIZE = Ext.isWebKit
+                ? -1
+                : window.console && window.console.firebug
+                    ? 20971521
+                    : 4294963200;
             this.callParent([this.fillConfig(a)]);
         },
         fillConfig: function (a) {
@@ -56,13 +61,13 @@ export default
             Ext.getCmp('upload_file_dialog')?.close();
         },
         showProgressIndicator: function () {
-            this.owner.setStatusBusy();
+            this.owner?.setStatusBusy();
         },
         hideProgressIndicator: function () {
             if (this.owner) {
                 this.owner.clearStatusBusy();
             }
-            else if (this.parent.appWin) {
+            else if (this.parent?.appWin) {
                 this.parent.appWin.clearStatusBusy();
             }
             else {
@@ -253,10 +258,10 @@ export default
                         });
                     }
                     if (window.XMLHttpRequest.prototype.sendAsBinary) {
-                        uploadData = formData.formdata + (fileData !== '' ? fileData : '') + '\r\n--' + formData.boundary + '--\r\n';
+                        uploadData = formData.formData + (fileData !== '' ? fileData : '') + '\r\n--' + formData.boundary + '--\r\n';
                     } else if (window.Blob) {
-                        var data = new Uint8Array(formData.formdata.length + fileData.length + '\r\n--' + formData.boundary + '--\r\n'.length);
-                        data.set(new TextEncoder().encode(formData.formdata + fileData + '\r\n--' + formData.boundary + '--\r\n'));
+                        var data = new Uint8Array(formData.formData.length + fileData.length + '\r\n--' + formData.boundary + '--\r\n'.length);
+                        data.set(new TextEncoder().encode(formData.formData + fileData + '\r\n--' + formData.boundary + '--\r\n'));
                         uploadData = data;
                     }
                 } else {
@@ -286,7 +291,7 @@ export default
                         });
                     },
                     failure: (response) => {
-                        self.helper.unmask(self.parent);
+                        self.parent && self.helper.unmask(self.parent);
                         self.hideProgressIndicator();
                         self.showMsg(`${self.helper.V('upload_file_dialog', 'file_uploading_failed_msg')}, Error: ${response.responseText}`);
                         console.error(self.helper.V('upload_file_dialog', 'file_uploading_failed_msg'), response);

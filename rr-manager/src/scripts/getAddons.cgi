@@ -7,6 +7,7 @@ import glob
 import shutil
 import subprocess
 from pathlib import Path
+from urllib.parse import parse_qs
 
 path_root = Path(__file__).parents[1]
 sys.path.append(str(path_root) + "/libs")
@@ -76,14 +77,7 @@ if __name__ == "__main__":
 
             # Extract category from query string
             query_string = os.environ.get("QUERY_STRING", "")
-            category = next(
-                (
-                    item.split("=")[1]
-                    for item in query_string.split("&")
-                    if item.startswith("category=")
-                ),
-                None,
-            )
+            category = parse_qs(query_string).get("category", [None])[0]
 
             # Read user configuration
             user_config = read_user_config()

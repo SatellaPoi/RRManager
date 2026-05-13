@@ -6,9 +6,9 @@ import sys
 import glob
 import shutil
 import tarfile
-import kmodule
 import subprocess
 from pathlib import Path
+import kmodule
 
 path_root = Path(__file__).parents[1]
 sys.path.append(str(path_root) + "/libs")
@@ -38,10 +38,7 @@ def read_user_config():
 
 
 # Function to read manifests in subdirectories
-def read_modules(modules_path, user_config, category):
-    installed = user_config.get("addons", [])
-    addons = []
-
+def read_modules(modules_path, user_config):
     MS = glob.glob(os.path.join(modules_path, "*.tgz"))
     MS.sort()
     modules = {}
@@ -51,7 +48,7 @@ def read_modules(modules_path, user_config, category):
     for M in MS:
         M_name = os.path.splitext(os.path.basename(M))[0]
         M_modules = {}
-        os.makedirs(TMP_PATH)
+        os.makedirs(TMP_PATH, exist_ok=True)
         with tarfile.open(M, "r") as tar:
             tar.extractall(TMP_PATH)
         KS = glob.glob(os.path.join(TMP_PATH, "*.ko"))
@@ -65,6 +62,7 @@ def read_modules(modules_path, user_config, category):
         modules[M_name] = M_modules
         if os.path.exists(TMP_PATH):
             shutil.rmtree(TMP_PATH)
+    return modules
 
 
 if __name__ == "__main__":

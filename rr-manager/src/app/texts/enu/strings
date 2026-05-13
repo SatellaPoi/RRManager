@@ -31,7 +31,9 @@ uploading_file = "Uploading file..."
 save_addons_changes = "Save addons changes"
 
 rr_config_applied="The RR config has been successfully applied. Please restart the NAS to apply the changes."
+rr_config_apply_error="Unable to apply RR config."
 checking_dependencies_loader="Checking the dependencies..."
+error_checking_share="Unable to check the configured share."
 
 section_rr_actions="Update RR Loader"
 run_update="Upload file"

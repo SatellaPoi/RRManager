@@ -12,7 +12,7 @@ export default SYNOCOMMUNITY.RRManager.UpdateHelper = {
       this.showMsg('File path is not provided');
       return;
     }
-    let sharesList = JSON.parse(localStorage.getItem('sharesList'));
+    let sharesList = JSON.parse(localStorage.getItem('sharesList') || '[]');
     let shareName = fileInfo.path.split('/')[1];
     let shareInfo = sharesList.find(
       share => share.name.toLocaleLowerCase() === shareName.toLocaleLowerCase()
@@ -96,7 +96,7 @@ export default SYNOCOMMUNITY.RRManager.UpdateHelper = {
       try {
         const responseText = await this.apiProvider.getUpdateFileInfo(updateFilePath);
         if (!responseText.success) {
-          this.helper.unmask(this.owner);
+          this.helper.unmask(this.appWin);
           this.showMsg(
             this.helper.formatString(
               this.helper.V('upload_file_dialog', 'unable_update_rr_msg'),
@@ -112,7 +112,7 @@ export default SYNOCOMMUNITY.RRManager.UpdateHelper = {
 
         if (await confirmUpdate(currentRrVersion, updateRrVersion)) {
           this.helper.mask(this.appWin);
-          this.apiProvider.callCustomScript(`runRrUpdate.cgi?file=${encodeURIComponent(updateFilePath)}`);
+          await this.apiProvider.callCustomScript(`runRrUpdate.cgi?file=${encodeURIComponent(updateFilePath)}`);
           const maxCountOfRefreshUpdateStatus = 350;
           let countUpdatesStatusAttemp = 0;
 
